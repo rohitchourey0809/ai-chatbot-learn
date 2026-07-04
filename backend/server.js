@@ -10,8 +10,7 @@ const port = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "https://ai-chatbot-learn.vercel.app",
+  "http://127.0.0.1:5173",  "https://ai-chatbot-learn.vercel.app",  "https://ai-chatbot-learn.vercel.app",
 ];
 
 const corsOptions = {

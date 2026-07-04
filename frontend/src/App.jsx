@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-const API_CHAT_URL = import.meta.env.VITE_API_BASE_URL || "/api/chat";
+const API_CHAT_URL = "/api/chat";
 
 const initialMessages = [
   {
