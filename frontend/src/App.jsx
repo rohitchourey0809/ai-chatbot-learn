@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://ai-chatbot-learn-4dir.vercel.app/api";
+const API_CHAT_URL = import.meta.env.VITE_API_BASE_URL || "/api/chat";
 
 const initialMessages = [
   {
@@ -40,7 +40,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/chat`, { message: userMessage.text });
+      const { data } = await axios.post(API_CHAT_URL, { message: userMessage.text });
 
       const aiMessage = {
         id: Date.now() + 1,

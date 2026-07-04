@@ -1,4 +1,30 @@
-import { GoogleGenAI } from "@google/genai";
+export const config = {
+  runtime: "nodejs20.x",
+};
+
+function parseBody(body) {
+  if (!body) {
+    return {};
+  }
+
+  if (typeof body === "string") {
+    try {
+      return JSON.parse(body);
+    } catch {
+      return {};
+    }
+  }
+
+  if (body instanceof Buffer) {
+    try {
+      return JSON.parse(body.toString("utf8"));
+    } catch {
+      return {};
+    }
+  }
+
+  return body;
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -6,10 +32,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed." });
   }
 
-  const { message } = req.body ?? {};
-  const trimmedMessage = typeof message === "string" ? message.trim() : "";
+  const parsedBody = parseBody(req.body);
+  const message = typeof parsedBody.message === "string" ? parsedBody.message.trim() : "";
 
-  if (!trimmedMessage) {
+  if (!message) {
     return res.status(400).json({ error: "Please enter a message." });
   }
 
@@ -21,15 +47,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: trimmedMessage,
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: message }] }],
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.error?.message || "Gemini API request failed.");
+    }
 
     const reply =
-      response.text ||
-      response.candidates?.[0]?.content?.parts?.map((part) => part.text).join("") ||
+      data.candidates?.[0]?.content?.parts?.map((part) => part.text).join("") ||
       "Sorry, I could not generate a response.";
 
     return res.status(200).json({ reply });
