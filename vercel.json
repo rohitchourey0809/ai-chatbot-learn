@@ -1,5 +1,10 @@
 {
   "buildCommand": "cd frontend && npm run build",
-  "installCommand": "npm install && cd frontend && npm install",
-  "outputDirectory": "frontend/dist"
+  "installCommand": "npm install && cd frontend && npm install && cd ../backend && npm install",
+  "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/**": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
