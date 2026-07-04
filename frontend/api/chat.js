@@ -1,5 +1,5 @@
 export const config = {
-  runtime: "nodejs20.x",
+  runtime: "@vercel/node@2.0.0",
 };
 
 function parseBody(body) {
