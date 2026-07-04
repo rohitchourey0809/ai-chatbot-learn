@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-axios.defaults.baseURL = "http://localhost:3000";
+const API_BASE_URL = "/api";
 
 const initialMessages = [
   {
@@ -40,7 +40,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const { data } = await axios.post("/chat", { message: userMessage.text });
+      const { data } = await axios.post(`${API_BASE_URL}/chat`, { message: userMessage.text });
 
       const aiMessage = {
         id: Date.now() + 1,
